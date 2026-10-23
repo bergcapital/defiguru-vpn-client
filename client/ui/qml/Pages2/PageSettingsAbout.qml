@@ -54,7 +54,7 @@ PageType {
 
             Image {
                 id: image
-                source: "qrc:/images/amneziaBigLogo.png"
+                source: "qrc:/defiguru/brain.webp"
 
                 Layout.alignment: Qt.AlignCenter
                 Layout.topMargin: 16
@@ -70,7 +70,7 @@ PageType {
                 Layout.leftMargin: 16
                 Layout.rightMargin: 16
 
-                text: qsTr("Support Amnezia")
+                text: "DeFiGuru VPN"
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -85,7 +85,7 @@ PageType {
                 height: 20
                 font.pixelSize: 14
 
-                text: qsTr("Amnezia is a free and open-source application. You can support the developers if you like it.")
+                text: qsTr("An independent open-source client based on AmneziaVPN. Powered by YLDX.AI.")
                 color: AmneziaStyle.color.paleGray
             }
 
@@ -147,6 +147,8 @@ PageType {
             BasicButtonType {
                 id: checkUpdatesButton
 
+                visible: false
+
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 8
                 Layout.bottomMargin: 16
@@ -186,7 +188,7 @@ PageType {
                 text: qsTr("Privacy Policy")
 
                 clickedFunc: function() {
-                    Qt.openUrlExternally(LanguageUiController.getCurrentSiteUrl("policy"))
+                    Qt.openUrlExternally("https://defiguru.ai/privacy")
                 }
             }
         }
@@ -194,7 +196,6 @@ PageType {
     
     property list<QtObject> contacts: [
         telegramGroup,
-        mail,
         github,
         website
     ]
@@ -202,11 +203,11 @@ PageType {
     QtObject {
         id: telegramGroup
 
-        readonly property string title: qsTr("Telegram group")
-        readonly property string description: qsTr("To discuss features")
+        readonly property string title: qsTr("DeFiGuru VPN support")
+        readonly property string description: qsTr("Setup help and your account")
         readonly property string imageSource: "qrc:/images/controls/telegram.svg"
         readonly property var handler: function() {
-            Qt.openUrlExternally(qsTr("https://telegram.me/amnezia_vpn_en"))
+            Qt.openUrlExternally("https://t.me/DeFiGuru_VPN_bot")
         }
     }
 
@@ -225,10 +226,10 @@ PageType {
         id: github
 
         readonly property string title: qsTr("GitHub")
-        readonly property string description: qsTr("Discover the source code")
+        readonly property string description: qsTr("Source code and open-source licenses")
         readonly property string imageSource: "qrc:/images/controls/github.svg"
         readonly property var handler: function() {
-            Qt.openUrlExternally(qsTr("https://github.com/amnezia-vpn/amnezia-client"))
+            Qt.openUrlExternally("https://github.com/BergMindset/defi-guru/tree/main/native/vpn-client")
         }
     }
 
@@ -239,7 +240,7 @@ PageType {
         readonly property string description: qsTr("Visit official website")
         readonly property string imageSource: "qrc:/images/controls/amnezia.svg"
         readonly property var handler: function() {
-            Qt.openUrlExternally(LanguageUiController.getCurrentSiteUrl())
+            Qt.openUrlExternally("https://defiguru.ai/services/vpn")
         }
     }
 }

@@ -437,7 +437,7 @@ void ImportController::importConfig(const QJsonObject &config)
         }
     } else {
         qDebug() << "Failed to import profile";
-        qDebug().noquote() << QJsonDocument(config).toJson();
+        // Imported settings can contain private keys. Never print the payload.
         emit importErrorOccurred(ErrorCode::ImportInvalidConfigError, false);
     }
 }

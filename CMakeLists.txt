@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.25.0 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(PROJECT AmneziaVPN)
+include(${CMAKE_CURRENT_LIST_DIR}/branding/defiguru.cmake)
+set(PROJECT DeFiGuruVPN)
 if(NOT AMNEZIAVPN_VERSION)
     set(AMNEZIAVPN_VERSION 5.0.3.0 CACHE STRING "Client app version")
 endif()
@@ -16,8 +17,8 @@ set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES
     CACHE STRING "" FORCE)
 
 project(${PROJECT} VERSION ${AMNEZIAVPN_VERSION}
-        DESCRIPTION "AmneziaVPN"
-        HOMEPAGE_URL "https://amnezia.org/"
+        DESCRIPTION "DeFiGuru VPN"
+        HOMEPAGE_URL "https://defiguru.ai/services/vpn"
 )
 
 option(AMNEZIA_BUILD_TESTS "Build test executables" OFF)

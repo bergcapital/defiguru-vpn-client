@@ -158,7 +158,7 @@ PageType {
                 Layout.leftMargin: 16
                 Layout.bottomMargin: 24
 
-                text: qsTr("Insert the key, add a configuration file or scan the QR-code")
+                text: qsTr("Paste your DeFiGuru VPN connection, or import your settings file.")
             }
 
             TextFieldWithHeaderType {
@@ -257,25 +257,21 @@ PageType {
                 disabledColor: AmneziaStyle.color.mutedGray
                 textColor: AmneziaStyle.color.goldenApricot
 
-                text: qsTr("Site Amnezia")
+                text: "Powered by YLDX.AI"
 
                 rightImageSource: "qrc:/images/controls/external-link.svg"
 
                 clickedFunc: function() {
-                    Qt.openUrlExternally(LanguageUiController.getCurrentSiteUrl())
+                    Qt.openUrlExternally("https://yldx.ai")
                 }
             }
         }
     }
 
     property list<QtObject> variants: [
-        amneziaVpn,
-        selfHostVpn,
         backupRestore,
         fileOpen,
-        qrScan,
-        restorePurchases,
-        siteLink
+        qrScan
     ]
     
     QtObject {

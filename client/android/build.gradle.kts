@@ -37,7 +37,8 @@ android {
     val abiList = qtTargetAbiList.split(",")
 
     defaultConfig {
-        applicationId = "org.amnezia.vpn"
+        // Keep the Java/JNI namespace above; the installed app has its own identity.
+        applicationId = "ai.defiguru.vpn"
         targetSdk = qtTargetSdkVersion.toInt()
 
         // keeps language resources for only the locales specified below
@@ -63,7 +64,11 @@ android {
             packaging {
                 resources.excludes += "DebugProbesKt.bin"
             }
-            signingConfig = signingConfigs["release"]
+            signingConfig = if (providers.environmentVariable("QT_ANDROID_KEYSTORE_PATH").isPresent) {
+                signingConfigs["release"]
+            } else {
+                null // CI produces an explicitly unsigned artifact until owner signing is configured.
+            }
         }
 
         create("fdroid") {
