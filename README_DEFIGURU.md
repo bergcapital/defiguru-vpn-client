@@ -3,6 +3,8 @@
 Native DeFiGuru VPN client based on the official AmneziaVPN `5.0.3.0` source.
 Powered by [YLDX.AI](https://yldx.ai).
 
+Public corresponding project source: [bergcapital/defiguru-vpn-client](https://github.com/bergcapital/defiguru-vpn-client).
+
 This patch contains source changes and **unsigned review builds**. A successful build
 does not establish App Store approval, notarization, production signing, or a
 working tunnel on a customer's phone.

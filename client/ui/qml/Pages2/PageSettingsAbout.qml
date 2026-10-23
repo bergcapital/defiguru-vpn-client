@@ -229,7 +229,7 @@ PageType {
         readonly property string description: qsTr("Source code and open-source licenses")
         readonly property string imageSource: "qrc:/images/controls/github.svg"
         readonly property var handler: function() {
-            Qt.openUrlExternally("https://github.com/BergMindset/defi-guru/tree/main/native/vpn-client")
+            Qt.openUrlExternally("https://github.com/bergcapital/defiguru-vpn-client")
         }
     }
 

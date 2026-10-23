@@ -1,3 +1,9 @@
+# DeFiGuru VPN
+
+This is the independent DeFiGuru VPN client. Read the [DeFiGuru setup, builds and GPL source notes](README_DEFIGURU.md). Powered by [YLDX.AI](https://yldx.ai).
+
+The original upstream project description follows for attribution and provenance.
+
 # Amnezia VPN
 
 ### _The best client for self-hosted VPN_

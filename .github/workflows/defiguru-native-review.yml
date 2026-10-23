@@ -36,8 +36,10 @@ jobs:
         env:
           QT_ROOT_PATH: ${{ runner.temp }}/Qt/6.10.1
         run: bash branding/build-unsigned.sh macos
-      - name: Archive unsigned review app
-        run: ditto -c -k --keepParent build-defiguru-macos/client/Release/DeFiGuruVPN.app DeFiGuruVPN-macOS-unsigned.zip
+      - name: Bundle Qt frameworks and archive unsigned review app
+        run: |
+          "$RUNNER_TEMP/Qt/6.10.1/macos/bin/macdeployqt" build-defiguru-macos/client/Release/DeFiGuruVPN.app -qmldir=client/ui/qml -no-strip
+          ditto -c -k --keepParent build-defiguru-macos/client/Release/DeFiGuruVPN.app DeFiGuruVPN-macOS-unsigned.zip
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: DeFiGuruVPN-macOS-unsigned-review

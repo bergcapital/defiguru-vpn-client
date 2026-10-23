@@ -3,6 +3,8 @@
 DeFiGuru VPN is an independent branded fork of the official AmneziaVPN client.
 It is not an Amnezia service or an endorsement by the Amnezia project.
 
+Public source and review build workflow: https://github.com/bergcapital/defiguru-vpn-client.
+
 - Base: `amnezia-vpn/amnezia-client`, stable tag `5.0.3.0`.
 - Pinned commit: `de93650a90739b87bb47a632872ea9d0adc9412f`.
 - Evaluated alternative: `amnezia-vpn/DefaultVPN`, dev
