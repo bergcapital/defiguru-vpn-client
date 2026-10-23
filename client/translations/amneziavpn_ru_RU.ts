@@ -3479,6 +3479,22 @@ Create one from the current settings.</source>
         <source>Visit official website</source>
         <translation>Посетить официальный сайт</translation>
     </message>
+    <message>
+        <source>An independent open-source client based on AmneziaVPN. Powered by YLDX.AI.</source>
+        <translation>Независимое приложение с открытым исходным кодом на базе AmneziaVPN. Powered by YLDX.AI.</translation>
+    </message>
+    <message>
+        <source>DeFiGuru VPN support</source>
+        <translation>Поддержка DeFiGuru VPN</translation>
+    </message>
+    <message>
+        <source>Setup help and your account</source>
+        <translation>Помощь с подключением и ваш аккаунт</translation>
+    </message>
+    <message>
+        <source>Source code and open-source licenses</source>
+        <translation>Исходный код и лицензии открытого ПО</translation>
+    </message>
 </context>
 <context>
     <name>PageSettingsApiAvailableCountries</name>
@@ -5510,6 +5526,30 @@ Create one from the current settings.</source>
         <location filename="../ui/qml/Pages2/PageSetupWizardStart.qml" line="42"/>
         <source>Let&apos;s get started</source>
         <translation>Приступим</translation>
+    </message>
+    <message>
+        <source>Paste your personal connection. Then tap Connect.</source>
+        <translation>Вставьте личный ключ подключения. Затем нажмите «Подключиться».</translation>
+    </message>
+    <message>
+        <source>Your connection</source>
+        <translation>Ваше подключение</translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation>Вставить</translation>
+    </message>
+    <message>
+        <source>Add my VPN</source>
+        <translation>Добавить мой VPN</translation>
+    </message>
+    <message>
+        <source>Import a file or QR code</source>
+        <translation>Импортировать файл или QR-код</translation>
+    </message>
+    <message>
+        <source>Help &amp; my account</source>
+        <translation>Помощь и мой аккаунт</translation>
     </message>
 </context>
 <context>

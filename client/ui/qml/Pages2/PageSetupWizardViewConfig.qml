@@ -15,6 +15,7 @@ PageType {
     id: root
 
     property bool showContent: false
+    property bool connectAfterImport: false
 
     BackButtonType {
         id: backButton
@@ -35,6 +36,7 @@ PageType {
         target: PageController
 
         function onClosePage() {
+            root.connectAfterImport = false
             ImportController.clearConfigFileName()
         }
     }
@@ -43,6 +45,7 @@ PageType {
         target: ImportController
 
         function onImportErrorOccurred(error, goToPageHome) {
+            root.connectAfterImport = false
             PageController.showBusyIndicator(false)
             if (goToPageHome) {
                 PageController.goToStartPage()
@@ -52,7 +55,12 @@ PageType {
         }
 
         function onImportFinished() {
+            const shouldConnect = root.connectAfterImport
+            root.connectAfterImport = false
             PageController.showBusyIndicator(false)
+            if (shouldConnect) {
+                ConnectionController.connectImportedProfile()
+            }
             PageController.goToPageHome()
         }
     }
@@ -205,6 +213,7 @@ PageType {
                 Layout.leftMargin: 16
 
                 text: qsTr("Connect")
+                enabled: !root.connectAfterImport
                 clickedFunc: function() {
                     const headerItem = listView.headerItem;
                     if (!headerItem) {
@@ -221,6 +230,7 @@ PageType {
                     if (cloakingCheckBoxItem.checked) {
                         ImportController.processNativeWireGuardConfig()
                     }
+                    root.connectAfterImport = true
                     PageController.showBusyIndicator(true)
                     ImportController.importConfig()
                 }

@@ -15,6 +15,12 @@ PageType {
     id: root
     enableTimer: false
 
+    function previewConnection() {
+        if (ImportController.extractConfigFromData(connectionKey.textField.text)) {
+            PageController.goToPage(PageEnum.PageSetupWizardViewConfig)
+        }
+    }
+
     ScrollView {
         anchors.fill: parent
         contentWidth: availableWidth
@@ -60,8 +66,11 @@ PageType {
             Layout.leftMargin: 20
             Layout.rightMargin: 20
             clickedFunc: function() {
-                textField.text = ""
-                textField.paste()
+                connectionKey.textField.text = ""
+                connectionKey.textField.paste()
+                if (connectionKey.textField.text.trim() !== "") {
+                    root.previewConnection()
+                }
             }
         }
 
@@ -78,9 +87,7 @@ PageType {
             enabled: connectionKey.textField.text.trim() !== ""
 
             clickedFunc: function() {
-                if (ImportController.extractConfigFromData(connectionKey.textField.text)) {
-                    PageController.goToPage(PageEnum.PageSetupWizardViewConfig)
-                }
+                root.previewConnection()
             }
         }
 

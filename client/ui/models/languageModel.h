@@ -19,7 +19,8 @@ namespace LanguageSettings
         Hindi,
         Spanish,
         Korean,
-        French
+        French,
+        Italian
     };
     Q_ENUM_NS(AvailableLanguageEnum)
 

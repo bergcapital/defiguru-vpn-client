@@ -29,7 +29,9 @@ for index, apk in enumerate(apks):
     matched = None
     with ZipFile(apk) as archive:
         for name in archive.namelist():
-            if name.endswith('/ic_launcher_foreground.png'):
+            # Release resource shrinking can rename Android resource paths.
+            # Compare decoded pixels rather than assuming the source filename.
+            if name.endswith('.png'):
                 raw = archive.read(name)
                 actual = Image.open(io.BytesIO(raw)).convert('RGBA')
                 if actual.size == reference.size and actual.tobytes() == reference.tobytes():

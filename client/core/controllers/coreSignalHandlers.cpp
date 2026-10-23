@@ -158,7 +158,8 @@ void CoreSignalHandlers::initExportControllerHandler()
 void CoreSignalHandlers::initImportControllerHandler()
 {
     connect(m_coreController->m_importCoreController, &ImportController::importFinished, this, [this]() {
-        if (m_coreController->m_connectionUiController->isConnected()) {
+        if (m_coreController->m_connectionUiController->isConnected()
+            || m_coreController->m_connectionUiController->isConnectionInProgress()) {
             return;
         }
 

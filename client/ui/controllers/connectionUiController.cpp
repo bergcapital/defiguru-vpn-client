@@ -148,6 +148,32 @@ void ConnectionUiController::toggleConnection()
     }
 }
 
+void ConnectionUiController::connectImportedProfile()
+{
+    // Called only after the user confirms this import. ImportFinished reaches
+    // QML before the core handler selects the new default, so defer the request.
+    // Capture the new ID now: a different import/selection must not change intent.
+    if (isConnected() || isConnectionInProgress()) {
+        return;
+    }
+    const QString importedId = m_serversController->getServerId(m_serversController->getServersCount() - 1);
+    if (importedId.isEmpty()) {
+        return;
+    }
+    QMetaObject::invokeMethod(this, [this, importedId]() {
+        if (isConnected() || isConnectionInProgress()
+            || m_serversController->getDefaultServerId() != importedId) {
+            return;
+        }
+        const ErrorCode errorCode = m_connectionController->isConnectionSupported(importedId);
+        if (errorCode != ErrorCode::NoError) {
+            notifyConnectionBlocked(errorCode);
+            return;
+        }
+        emit prepareConfig();
+    }, Qt::QueuedConnection);
+}
+
 void ConnectionUiController::notifyConnectionBlocked(ErrorCode errorCode)
 {
     if (errorCode == ErrorCode::LegacyApiV1NotSupportedError) {

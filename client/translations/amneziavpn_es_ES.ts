@@ -3478,6 +3478,22 @@ Cree una a partir de los ajustes actuales.</translation>
         <source>Visit official website</source>
         <translation>Visitar el sitio web oficial</translation>
     </message>
+    <message>
+        <source>An independent open-source client based on AmneziaVPN. Powered by YLDX.AI.</source>
+        <translation>Una aplicación independiente de código abierto basada en AmneziaVPN. Powered by YLDX.AI.</translation>
+    </message>
+    <message>
+        <source>DeFiGuru VPN support</source>
+        <translation>Soporte de DeFiGuru VPN</translation>
+    </message>
+    <message>
+        <source>Setup help and your account</source>
+        <translation>Ayuda de configuración y tu cuenta</translation>
+    </message>
+    <message>
+        <source>Source code and open-source licenses</source>
+        <translation>Código fuente y licencias de código abierto</translation>
+    </message>
 </context>
 <context>
     <name>PageSettingsApiAvailableCountries</name>
@@ -5506,6 +5522,30 @@ Cree una a partir de los ajustes actuales.</translation>
         <location filename="../ui/qml/Pages2/PageSetupWizardStart.qml" line="42"/>
         <source>Let&apos;s get started</source>
         <translation>Empecemos</translation>
+    </message>
+    <message>
+        <source>Paste your personal connection. Then tap Connect.</source>
+        <translation>Pega tu conexión personal. Después pulsa Conectar.</translation>
+    </message>
+    <message>
+        <source>Your connection</source>
+        <translation>Tu conexión</translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation>Pegar</translation>
+    </message>
+    <message>
+        <source>Add my VPN</source>
+        <translation>Añadir mi VPN</translation>
+    </message>
+    <message>
+        <source>Import a file or QR code</source>
+        <translation>Importar un archivo o código QR</translation>
+    </message>
+    <message>
+        <source>Help &amp; my account</source>
+        <translation>Ayuda y mi cuenta</translation>
     </message>
 </context>
 <context>

@@ -12,9 +12,18 @@ working tunnel on a customer's phone.
 ## Customer setup
 
 1. Get your personal connection in [DeFiGuru VPN](https://t.me/DeFiGuru_VPN_bot).
-2. Open DeFiGuru VPN, paste the connection and tap **Add my VPN**.
-3. Confirm the imported connection and tap **Connect**. Allow the system VPN
+2. Open DeFiGuru VPN and tap **Paste** to review your connection.
+3. Tap **Connect**. Allow the system VPN
    permission when requested.
+
+The explicit Paste button opens the review directly. **Add my VPN** remains a
+fallback when pasting with the system keyboard. Confirmation keeps upstream
+untrusted-configuration warnings and never interrupts an existing connection.
+
+The DeFiGuru welcome and support copy is translated into Russian, Italian and
+Spanish. Upstream Russian/Spanish catalogs are retained; the new Italian catalog
+currently covers the DeFiGuru setup/support messages, with other screens falling
+back to English.
 
 The normal path needs no server address, SSH login, password, or manual protocol
 fields. A settings file and QR import remain alternative options. Private

@@ -31,6 +31,7 @@ public:
 
 public slots:
     void toggleConnection();
+    void connectImportedProfile();
 
     void openConnection();
     void closeConnection();
