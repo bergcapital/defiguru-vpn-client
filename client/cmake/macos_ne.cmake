@@ -146,5 +146,7 @@ message(${QtCore_location})
 get_filename_component(QT_BIN_DIR_DETECTED "${QtCore_location}/../../../../../bin" ABSOLUTE)
 
 add_custom_command(TARGET ${PROJECT} POST_BUILD
-    COMMAND ${QT_BIN_DIR_DETECTED}/macdeployqt $<TARGET_BUNDLE_DIR:${PROJECT}> -appstore-compliant -qmldir=${CMAKE_CURRENT_SOURCE_DIR} -no-codesign
+    # Qt 6.10.1 does not recognise -no-codesign. It signs only when an explicit
+    # identity is supplied; review builds never pass an owner signing identity.
+    COMMAND ${QT_BIN_DIR_DETECTED}/macdeployqt $<TARGET_BUNDLE_DIR:${PROJECT}> -appstore-compliant -qmldir=${CMAKE_CURRENT_SOURCE_DIR}
 )
