@@ -5,7 +5,7 @@ on:
       platform:
         description: Platform to compile
         type: choice
-        options: [all, macos, android]
+        options: [all, macos, android, ios]
         default: all
 permissions:
   contents: read
@@ -44,6 +44,54 @@ jobs:
         with:
           name: DeFiGuruVPN-macOS-unsigned-review
           path: DeFiGuruVPN-macOS-unsigned.zip
+          if-no-files-found: error
+          retention-days: 14
+  ios:
+    if: inputs.platform == 'all' || inputs.platform == 'ios'
+    runs-on: macos-15
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Install build tools
+        run: python -m pip install 'conan==2.28.0' 'cmake>=3.25,<4.2' ninja jsonschema jinja2
+      - uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
+        with:
+          version: '6.10.1'
+          host: mac
+          target: desktop
+          arch: clang_64
+          modules: qtremoteobjects qt5compat qtshadertools qtimageformats
+          dir: ${{ runner.temp }}
+          cache: true
+      - uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
+        with:
+          version: '6.10.1'
+          host: mac
+          target: ios
+          arch: ios
+          modules: qtremoteobjects qt5compat qtshadertools qtimageformats
+          dir: ${{ runner.temp }}
+          cache: true
+      - name: Compile unsigned iPhone app and VPN extension
+        env:
+          QT_ROOT_PATH: ${{ runner.temp }}/Qt/6.10.1
+        run: bash branding/build-unsigned.sh ios
+      - name: Archive iOS review bundle without signing or store submission
+        run: |
+          app=build-defiguru-ios/client/Release-iphoneos/DeFiGuruVPN.app
+          test -d "$app"
+          /usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = ai.defiguru.vpn
+          ditto -c -k --keepParent "$app" DeFiGuruVPN-iOS-unsigned-review.zip
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-iOS-unsigned-review
+          path: DeFiGuruVPN-iOS-unsigned-review.zip
           if-no-files-found: error
           retention-days: 14
   android:
