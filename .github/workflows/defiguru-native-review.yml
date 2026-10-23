@@ -5,11 +5,42 @@ on:
       platform:
         description: Platform to compile
         type: choice
-        options: [all, macos, android, ios]
+        options: [all, macos, android, ios, inspect-android]
         default: all
+      android-artifact-run:
+        description: Existing native build run to inspect without rebuilding
+        type: string
+        default: '39960364774'
 permissions:
   contents: read
 jobs:
+  inspect-android:
+    if: inputs.platform == 'inspect-android'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Retrieve only the existing public review artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_RUN: ${{ inputs.android-artifact-run }}
+        run: |
+          [[ "$ARTIFACT_RUN" =~ ^[0-9]+$ ]]
+          gh run download "$ARTIFACT_RUN" --repo "$GITHUB_REPOSITORY" --name DeFiGuruVPN-Android-arm64-unsigned-review --dir android-artifact
+      - name: Verify installed package, brand pixels, provider authority and signing state
+        run: |
+          python3 -m pip install 'Pillow==11.3.0'
+          tools_dir="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          python3 branding/inspect-android.py android-artifact android-review "$tools_dir"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-Android-brand-inspection
+          path: android-review/
+          if-no-files-found: error
+          retention-days: 14
   macos:
     if: inputs.platform == 'all' || inputs.platform == 'macos'
     runs-on: macos-15

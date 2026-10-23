@@ -1,0 +1,41 @@
+name: VPN isolated transport canary
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vpn-owned-production-transport-canary
+  cancel-in-progress: false
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
+        with:
+          go-version: '1.25.0'
+          cache-dependency-path: tools/transport-canary/go.sum
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.0'
+      - name: Build the isolated userspace probe
+        working-directory: tools/transport-canary
+        run: |
+          node --test safety.test.mjs
+          go test ./...
+          go build -trimpath -o probe .
+          npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify real DNS, TLS, HTTPS and rekey; revoke temporary peer in finally
+        working-directory: tools/transport-canary
+        run: node canary.mjs --execute
+      - name: Save only sanitized probe evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: VPN-independent-transport-canary
+          path: tools/transport-canary/result.json
+          if-no-files-found: warn
+          retention-days: 14
