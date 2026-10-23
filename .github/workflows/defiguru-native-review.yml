@@ -5,15 +5,58 @@ on:
       platform:
         description: Platform to compile
         type: choice
-        options: [all, macos, android, ios, inspect-android]
+        options: [all, macos, android, ios, inspect-android, capture-macos]
         default: all
       android-artifact-run:
         description: Existing native build run to inspect without rebuilding
         type: string
         default: '39960364774'
+      macos-artifact-run:
+        description: Existing compiled macOS review artifact to capture without rebuilding
+        type: string
+        default: '40001578638'
 permissions:
   contents: read
 jobs:
+  capture-macos:
+    if: inputs.platform == 'capture-macos'
+    runs-on: macos-15-intel
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Retrieve the existing public unsigned macOS review artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_RUN: ${{ inputs.macos-artifact-run }}
+        run: |
+          [[ "$ARTIFACT_RUN" =~ ^[0-9]+$ ]]
+          gh run download "$ARTIFACT_RUN" --repo "$GITHUB_REPOSITORY" --name DeFiGuruVPN-macOS-unsigned-review --dir compiled-macos
+          ditto -x -k compiled-macos/DeFiGuruVPN-macOS-unsigned.zip .
+      - name: Capture actual empty welcome QML without connecting
+        timeout-minutes: 2
+        run: |
+          capture_settings="$(mktemp -d)"
+          DEFIGURU_REVIEW_SETTINGS_DIR="$capture_settings" DEFIGURU_REVIEW_CAPTURE_PATH="$GITHUB_WORKSPACE/DeFiGuruVPN-welcome.png" QT_QUICK_BACKEND=software QT_QPA_PLATFORM=cocoa QT_PLUGIN_PATH="$GITHUB_WORKSPACE/DeFiGuruVPN.app/Contents/PlugIns" DeFiGuruVPN.app/Contents/MacOS/DeFiGuruVPN
+          test -s DeFiGuruVPN-welcome.png
+          python -m pip install 'Pillow==11.3.0'
+          python - <<'PYIMAGE'
+          from PIL import Image, ImageStat
+          image = Image.open('DeFiGuruVPN-welcome.png').convert('RGB')
+          assert image.width >= 320 and image.height >= 480, 'Unexpected welcome dimensions'
+          assert max(ImageStat.Stat(image).stddev) > 15, 'Blank or uniform welcome capture'
+          print(f'Actual QML welcome: {image.width}x{image.height}')
+          PYIMAGE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-actual-welcome-preview
+          path: DeFiGuruVPN-welcome.png
+          if-no-files-found: error
+          retention-days: 14
   inspect-android:
     if: inputs.platform == 'inspect-android'
     runs-on: ubuntu-24.04
@@ -81,7 +124,7 @@ jobs:
         timeout-minutes: 2
         run: |
           capture_settings="$(mktemp -d)"
-          DEFIGURU_REVIEW_SETTINGS_DIR="$capture_settings" DEFIGURU_REVIEW_CAPTURE_PATH="$GITHUB_WORKSPACE/DeFiGuruVPN-welcome.png" QT_QUICK_BACKEND=software QT_QPA_PLATFORM=offscreen QT_PLUGIN_PATH="$RUNNER_TEMP/Qt/6.10.1/macos/plugins" build-defiguru-macos/client/Release/DeFiGuruVPN.app/Contents/MacOS/DeFiGuruVPN
+          DEFIGURU_REVIEW_SETTINGS_DIR="$capture_settings" DEFIGURU_REVIEW_CAPTURE_PATH="$GITHUB_WORKSPACE/DeFiGuruVPN-welcome.png" QT_QUICK_BACKEND=software QT_QPA_PLATFORM=cocoa QT_PLUGIN_PATH="$RUNNER_TEMP/Qt/6.10.1/macos/plugins" build-defiguru-macos/client/Release/DeFiGuruVPN.app/Contents/MacOS/DeFiGuruVPN
           test -s DeFiGuruVPN-welcome.png
           python -m pip install 'Pillow==11.3.0'
           python - <<'PYIMAGE'

@@ -112,6 +112,12 @@ No enrollment, agreement acceptance, membership purchase, certificate creation
 or store submission is performed by this source/build workflow. Do not post
 passwords, private signing keys, certificates or provisioning secrets in chat.
 
+After signing, physical iPhone/Android acceptance must check DNS, IPv4 and IPv6
+routing/leaks, reconnect, background/resume and network switching. The independent
+userspace DNS/HTTPS IPv4 canary proves the server transport and key format, not
+native OS routes or phone leak protection. Store readiness requires those device
+results in addition to compilation and signing.
+
 ### Actual welcome preview
 
 The macOS review workflow captures the real welcome QML into a small PNG using
