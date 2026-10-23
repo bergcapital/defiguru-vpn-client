@@ -11,7 +11,8 @@ from zipfile import ZipFile
 from PIL import Image
 
 root = Path(__file__).resolve().parents[1]
-artifact, output, tools = map(Path, sys.argv[1:])
+artifact, output, tools = map(Path, sys.argv[1:4])
+expected_package = sys.argv[4] if len(sys.argv) > 4 else 'ai.defiguru.vpn'
 output.mkdir(parents=True, exist_ok=True)
 apks = sorted(artifact.rglob('*.apk'))
 assert apks, 'No APK in the existing review artifact'
@@ -23,9 +24,10 @@ for index, apk in enumerate(apks):
     package = re.search(r"package: name='([^']+)'", badging).group(1)
     version = re.search(r"versionName='([^']+)'", badging).group(1)
     label = re.search(r"application-label:'([^']+)'", badging).group(1)
-    assert package == 'ai.defiguru.vpn', 'Unexpected installed package'
-    assert label in {'DeFiGuruVPN', 'DeFiGuru VPN'}, 'Unexpected application brand'
-    assert 'ai.defiguru.vpn.qtprovider' in manifest, 'Unexpected FileProvider authority'
+    assert package == expected_package, 'Unexpected installed package'
+    expected_labels = {'DeFiGuru VPN Preview'} if package.endswith('.review') else {'DeFiGuruVPN', 'DeFiGuru VPN'}
+    assert label in expected_labels, 'Unexpected application brand'
+    assert expected_package + '.qtprovider' in manifest, 'Unexpected FileProvider authority'
     matched = None
     with ZipFile(apk) as archive:
         for name in archive.namelist():
@@ -40,10 +42,12 @@ for index, apk in enumerate(apks):
                     break
     assert matched, 'APK does not contain the audited DeFiGuru brain icon pixels'
     signature = subprocess.run([str(tools / 'apksigner'), 'verify', '--verbose', str(apk)], capture_output=True)
+    if package.endswith('.review'):
+        assert signature.returncode == 0, 'Preview must have a valid test signature'
     report = {'apk': apk.name, 'bytes': apk.stat().st_size,
               'sha256': hashlib.sha256(apk.read_bytes()).hexdigest(),
               'package': package, 'version': version, 'label': label,
-              'providerAuthority': 'ai.defiguru.vpn.qtprovider',
+              'providerAuthority': expected_package + '.qtprovider',
               'brandIconPixelMatch': True, 'brandIconResource': matched,
               'signature': 'signed' if signature.returncode == 0 else 'unsigned',
               'ownerReleaseSignatureProven': False, 'installOrTunnelTestPerformed': False}

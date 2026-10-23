@@ -27,6 +27,7 @@ ConnectionUiController::ConnectionUiController(ConnectionController* connectionC
 
 void ConnectionUiController::openConnection()
 {
+    ++m_connectionIntentRevision;
     const QString serverId = m_serversController->getDefaultServerId();
     if (serverId.isEmpty()) {
         m_connectionController->setConnectionState(Vpn::ConnectionState::Disconnected);
@@ -43,6 +44,7 @@ void ConnectionUiController::openConnection()
 
 void ConnectionUiController::closeConnection()
 {
+    ++m_connectionIntentRevision;
     m_connectionController->closeConnection();
 }
 
@@ -133,6 +135,7 @@ void ConnectionUiController::toggleConnection()
     } else if (isConnected()) {
         closeConnection();
     } else {
+        ++m_connectionIntentRevision;
         const QString serverId = m_serversController->getDefaultServerId();
         if (serverId.isEmpty()) {
             return;
@@ -150,6 +153,7 @@ void ConnectionUiController::toggleConnection()
 
 void ConnectionUiController::connectImportedProfile()
 {
+    const quint64 intentRevision = ++m_connectionIntentRevision;
     // Called only after the user confirms this import. ImportFinished reaches
     // QML before the core handler selects the new default, so defer the request.
     // Capture the new ID now: a different import/selection must not change intent.
@@ -160,9 +164,15 @@ void ConnectionUiController::connectImportedProfile()
     if (importedId.isEmpty()) {
         return;
     }
-    QMetaObject::invokeMethod(this, [this, importedId]() {
-        if (isConnected() || isConnectionInProgress()
+    QMetaObject::invokeMethod(this, [this, importedId, intentRevision]() {
+        if (m_connectionIntentRevision != intentRevision
+            || isConnected() || isConnectionInProgress()
             || m_serversController->getDefaultServerId() != importedId) {
+            return;
+        }
+        // Subscription profiles have an upstream renewal/update path. Keep
+        // this shortcut scoped to ready self-hosted client imports only.
+        if (m_serversController->apiV2Config(importedId).has_value()) {
             return;
         }
         const ErrorCode errorCode = m_connectionController->isConnectionSupported(importedId);
@@ -170,7 +180,22 @@ void ConnectionUiController::connectImportedProfile()
             notifyConnectionBlocked(errorCode);
             return;
         }
-        emit prepareConfig();
+        // A ready client profile already contains its private client config.
+        // InstallController's asynchronous validation only checks this same
+        // condition for these profiles. Bind preparation/open to the captured
+        // ID rather than resolving a mutable default after an async callback.
+        const DockerContainer container = m_serversController->getDefaultContainer(importedId);
+        const ContainerConfig config = m_serversController->getContainerConfig(importedId, container);
+        if (!config.protocolConfig.hasClientConfig()) {
+            notifyConnectionBlocked(ErrorCode::NoInstalledContainersError);
+            return;
+        }
+        m_connectionController->setConnectionState(Vpn::ConnectionState::Preparing);
+        const ErrorCode openError = m_connectionController->openConnection(importedId);
+        if (openError != ErrorCode::NoError) {
+            m_connectionController->setConnectionState(Vpn::ConnectionState::Disconnected);
+            notifyConnectionBlocked(openError);
+        }
     }, Qt::QueuedConnection);
 }
 

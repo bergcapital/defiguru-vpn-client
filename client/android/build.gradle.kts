@@ -39,6 +39,7 @@ android {
     defaultConfig {
         // Keep the Java/JNI namespace above; the installed app has its own identity.
         applicationId = "ai.defiguru.vpn"
+        manifestPlaceholders["defiguruAppLabel"] = "DeFiGuru VPN"
         targetSdk = qtTargetSdkVersion.toInt()
 
         // keeps language resources for only the locales specified below
@@ -59,6 +60,14 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            // An installable review app with the ordinary ephemeral Android
+            // debug certificate. It never occupies the production package ID.
+            applicationIdSuffix = ".review"
+            versionNameSuffix = "-preview"
+            manifestPlaceholders["defiguruAppLabel"] = "DeFiGuru VPN Preview"
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             // exclude coroutine debug resource from release build
             packaging {

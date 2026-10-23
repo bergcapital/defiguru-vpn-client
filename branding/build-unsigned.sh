@@ -15,7 +15,7 @@ command -v conan >/dev/null || { echo "Conan 2.28 is required." >&2; exit 2; }
 args=(-S "$task_root" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release)
 case "$target" in
     macos)
-        args+=(-G Xcode -DMACOS_NE=ON -DCONAN_INSTALL_BUILD_CONFIGURATIONS=Release
+        args+=(-G Xcode -DMACOS_NE=ON -DCONAN_INSTALL_BUILD_CONFIGURATIONS=Release -DDEFIGURU_REVIEW_CAPTURE=ON
             "-DCMAKE_PREFIX_PATH=$qt_root/macos" -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO
             -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=NO)
         ;;

@@ -1,5 +1,10 @@
 #include <QDebug>
 #include <QTimer>
+#ifdef DEFIGURU_REVIEW_CAPTURE
+#include <QImage>
+#include <QQuickWindow>
+#include <QSettings>
+#endif
 #include <libssh/libssh.h>
 #include <openssl/ssl.h>
 
@@ -38,6 +43,15 @@ bool isAnotherInstanceRunning()
 
 int main(int argc, char *argv[])
 {
+#ifdef DEFIGURU_REVIEW_CAPTURE
+    const QString capturePath = qEnvironmentVariable("DEFIGURU_REVIEW_CAPTURE_PATH");
+    const QString captureSettings = qEnvironmentVariable("DEFIGURU_REVIEW_SETTINGS_DIR");
+    const bool captureReview = !capturePath.isEmpty() && !captureSettings.isEmpty();
+    if (captureReview) {
+        QSettings::setDefaultFormat(QSettings::IniFormat);
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, captureSettings);
+    }
+#endif
     Migrations migrationsManager;
     migrationsManager.doMigrations();
 
@@ -86,6 +100,24 @@ int main(int argc, char *argv[])
 
     if (doExec) {
         app.init();
+#ifdef DEFIGURU_REVIEW_CAPTURE
+        if (captureReview) {
+            // Actual QML render from an empty review settings context. Never
+            // imports a connection, clicks Connect or requests VPN permission.
+            QTimer::singleShot(2500, &app, [&app, capturePath]() {
+                bool saved = false;
+                for (QObject *object : app.qmlEngine()->rootObjects()) {
+                    if (auto *window = qobject_cast<QQuickWindow *>(object)) {
+                        const QImage frame = window->grabWindow();
+                        saved = !frame.isNull() && frame.save(capturePath, "PNG");
+                        break;
+                    }
+                }
+                app.exit(saved ? 0 : 2);
+            });
+            QTimer::singleShot(15000, &app, [&app]() { app.exit(3); });
+        }
+#endif
 
         qInfo().noquote() << QString("Started %1 version %2 %3").arg(APPLICATION_NAME, APP_VERSION, GIT_COMMIT_HASH);
         qInfo().noquote() << QString("%1 (%2)").arg(QSysInfo::prettyProductName(), QSysInfo::currentCpuArchitecture());

@@ -77,6 +77,26 @@ jobs:
           path: DeFiGuruVPN-macOS-unsigned.zip
           if-no-files-found: error
           retention-days: 14
+      - name: Capture actual empty welcome QML without connecting
+        timeout-minutes: 2
+        run: |
+          capture_settings="$(mktemp -d)"
+          DEFIGURU_REVIEW_SETTINGS_DIR="$capture_settings" DEFIGURU_REVIEW_CAPTURE_PATH="$GITHUB_WORKSPACE/DeFiGuruVPN-welcome.png" QT_QUICK_BACKEND=software QT_QPA_PLATFORM=offscreen QT_PLUGIN_PATH="$RUNNER_TEMP/Qt/6.10.1/macos/plugins" build-defiguru-macos/client/Release/DeFiGuruVPN.app/Contents/MacOS/DeFiGuruVPN
+          test -s DeFiGuruVPN-welcome.png
+          python -m pip install 'Pillow==11.3.0'
+          python - <<'PYIMAGE'
+          from PIL import Image, ImageStat
+          image = Image.open('DeFiGuruVPN-welcome.png').convert('RGB')
+          assert image.width >= 320 and image.height >= 480, 'Unexpected welcome dimensions'
+          assert max(ImageStat.Stat(image).stddev) > 15, 'Blank or uniform welcome capture'
+          print(f'Actual QML welcome: {image.width}x{image.height}')
+          PYIMAGE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-actual-welcome-preview
+          path: DeFiGuruVPN-welcome.png
+          if-no-files-found: error
+          retention-days: 14
   ios:
     if: inputs.platform == 'all' || inputs.platform == 'ios'
     runs-on: macos-15-intel
@@ -173,9 +193,32 @@ jobs:
         run: |
           export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/$NDK_VERSION"
           bash branding/build-unsigned.sh android
+      - name: Build the separately identified installable Android Preview
+        run: |
+          android_tree="$(find build-defiguru-android/client -mindepth 1 -maxdepth 1 -type d -name 'android-build*' | head -1)"
+          test -n "$android_tree"
+          (cd "$android_tree" && ./gradlew assembleOssDebug)
+          preview_apk="$(find "$android_tree/build/outputs/apk/oss/debug" -maxdepth 1 -name '*.apk' -type f | head -1)"
+          test -f "$preview_apk"
+          mkdir android-preview
+          cp "$preview_apk" android-preview/DeFiGuruVPN-Android-Preview.apk
+          python3 -m pip install 'Pillow==11.3.0'
+          python3 branding/inspect-android.py android-preview android-preview-inspection "$ANDROID_HOME/build-tools/36.0.0" ai.defiguru.vpn.review
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-Android-installable-Preview
+          path: android-preview/DeFiGuruVPN-Android-Preview.apk
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: DeFiGuruVPN-Android-Preview-inspection
+          path: android-preview-inspection/
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: DeFiGuruVPN-Android-arm64-unsigned-review
-          path: build-defiguru-android/client/android-build*/build/outputs/apk/**/*.apk
+          path: build-defiguru-android/client/android-build*/build/outputs/apk/oss/release/*.apk
           if-no-files-found: error
           retention-days: 14

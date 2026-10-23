@@ -3376,6 +3376,10 @@ Create one from the current settings.</source>
         <source>Dev console</source>
         <translation>Консоль разработчика</translation>
     </message>
+    <message>
+        <source>About DeFiGuru VPN</source>
+        <translation>О DeFiGuru VPN</translation>
+    </message>
 </context>
 <context>
     <name>PageSettingsAbout</name>
@@ -5266,6 +5270,10 @@ Create one from the current settings.</source>
         <location filename="../ui/qml/Pages2/PageSetupWizardConfigSource.qml" line="392"/>
         <source>I have nothing</source>
         <translation>У меня ничего нет</translation>
+    </message>
+    <message>
+        <source>Paste your DeFiGuru VPN connection, or import your settings file.</source>
+        <translation>Вставьте личный ключ DeFiGuru VPN или импортируйте файл настроек.</translation>
     </message>
 </context>
 <context>

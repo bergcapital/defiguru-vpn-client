@@ -66,6 +66,7 @@ private:
     QString m_connectionStateText = tr("Connect");
 
     Vpn::ConnectionState m_state;
+    quint64 m_connectionIntentRevision = 0;
 };
 
 #endif

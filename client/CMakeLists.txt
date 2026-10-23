@@ -56,6 +56,10 @@ endif()
 
 qt_standard_project_setup()
 qt_add_executable(${PROJECT} MANUAL_FINALIZATION)
+option(DEFIGURU_REVIEW_CAPTURE "Enable empty-state QML capture for review CI only" OFF)
+if(DEFIGURU_REVIEW_CAPTURE)
+    target_compile_definitions(${PROJECT} PRIVATE DEFIGURU_REVIEW_CAPTURE)
+endif()
 target_include_directories(${PROJECT} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )

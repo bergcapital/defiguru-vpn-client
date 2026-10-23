@@ -3375,6 +3375,10 @@ Cree una a partir de los ajustes actuales.</translation>
         <source>Dev console</source>
         <translation>Consola de desarrollo</translation>
     </message>
+    <message>
+        <source>About DeFiGuru VPN</source>
+        <translation>Acerca de DeFiGuru VPN</translation>
+    </message>
 </context>
 <context>
     <name>PageSettingsAbout</name>
@@ -5262,6 +5266,10 @@ Cree una a partir de los ajustes actuales.</translation>
         <location filename="../ui/qml/Pages2/PageSetupWizardConfigSource.qml" line="392"/>
         <source>I have nothing</source>
         <translation>No tengo nada</translation>
+    </message>
+    <message>
+        <source>Paste your DeFiGuru VPN connection, or import your settings file.</source>
+        <translation>Pega tu conexión de DeFiGuru VPN o importa tu archivo de configuración.</translation>
     </message>
 </context>
 <context>

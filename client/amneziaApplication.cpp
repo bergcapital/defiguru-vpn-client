@@ -64,7 +64,14 @@ AmneziaApplication::AmneziaApplication(int &argc, char *argv[]) : AMNEZIA_BASE_C
     QFile::setPermissions(configLoc2, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
 #endif
 
-    m_settings = new SecureQSettings(ORGANIZATION_NAME, APPLICATION_NAME, this);
+#ifdef DEFIGURU_REVIEW_CAPTURE
+    if (!qEnvironmentVariable("DEFIGURU_REVIEW_SETTINGS_DIR").isEmpty()) {
+        m_settings = new SecureQSettings("DeFiGuruReviewCapture", "EmptyWelcome", this, false);
+    } else
+#endif
+    {
+        m_settings = new SecureQSettings(ORGANIZATION_NAME, APPLICATION_NAME, this);
+    }
     m_nam = new QNetworkAccessManager(this);
 }
 
@@ -162,7 +169,12 @@ void AmneziaApplication::init()
     m_vpnConnection->moveToThread(&m_vpnConnectionThread);
     m_vpnConnectionThread.start();
 
-    m_coreController.reset(new CoreController(m_vpnConnection, m_settings, m_engine));
+    bool skipPlatformControllersForReview = false;
+#ifdef DEFIGURU_REVIEW_CAPTURE
+    skipPlatformControllersForReview = !qEnvironmentVariable("DEFIGURU_REVIEW_SETTINGS_DIR").isEmpty();
+#endif
+    m_coreController.reset(new CoreController(m_vpnConnection, m_settings, m_engine, nullptr,
+                                             skipPlatformControllersForReview));
 
     m_engine->addImportPath(QStringLiteral(APP_QML_IMPORT_PATH));
 

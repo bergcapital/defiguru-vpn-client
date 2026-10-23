@@ -32,12 +32,24 @@ PageType {
         width: root.width
         spacing: 0
 
+        BasicButtonType {
+            text: LanguageUiController.currentLanguageName + "  ⌄"
+            defaultColor: AmneziaStyle.color.transparent
+            hoveredColor: AmneziaStyle.color.translucentWhite
+            pressedColor: AmneziaStyle.color.sheerWhite
+            textColor: "#C7BCE8"
+            Layout.alignment: Qt.AlignRight
+            Layout.topMargin: 12 + PageController.safeAreaTopMargin
+            Layout.rightMargin: 16
+            clickedFunc: function() { languageDrawer.openTriggered() }
+        }
+
         Image {
             id: image
             source: "qrc:/defiguru/brain.webp"
 
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.topMargin: 32 + PageController.safeAreaTopMargin
+            Layout.topMargin: 16
             Layout.preferredWidth: 180
             Layout.preferredHeight: 180
         }
@@ -125,6 +137,12 @@ PageType {
         }
     }
 
+    }
+
+    SelectLanguageDrawer {
+        id: languageDrawer
+        width: root.width
+        height: root.height
     }
 
     Timer {

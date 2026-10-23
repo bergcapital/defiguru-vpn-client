@@ -74,12 +74,12 @@ ListViewType {
                         : AmneziaStyle.color.mutedGray
 
                     checked: index === root.selectedIndex
-                    checkable: !ConnectionController.isConnected
+                    checkable: !ConnectionController.isConnected && !ConnectionController.isConnectionInProgress
 
                     ButtonGroup.group: serversRadioButtonGroup
 
                     onClicked: {
-                        if (ConnectionController.isConnected) {
+                        if (ConnectionController.isConnected || ConnectionController.isConnectionInProgress) {
                             PageController.showNotificationMessage(qsTr("Unable change server while there is an active connection"))
                             return
                         }
