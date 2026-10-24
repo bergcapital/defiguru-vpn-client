@@ -17,7 +17,7 @@ working tunnel on a customer's phone.
    permission when requested.
 
 The explicit Paste button opens the review directly. **Add my VPN** remains a
-fallback when pasting with the system keyboard. Confirmation keeps upstream
+fallback shown only after pasting with the system keyboard. Confirmation keeps upstream
 untrusted-configuration warnings and never interrupts an existing connection.
 
 The welcome screen includes a language selector. The DeFiGuru setup and support

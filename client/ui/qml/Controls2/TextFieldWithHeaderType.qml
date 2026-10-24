@@ -21,6 +21,10 @@ Item {
 
     property string buttonText
     property string buttonImageSource
+    property string buttonDefaultColor: AmneziaStyle.color.paleGray
+    property string buttonHoveredColor: AmneziaStyle.color.lightGray
+    property string buttonPressedColor: AmneziaStyle.color.mutedGray
+    property string buttonTextColor: AmneziaStyle.color.midnightBlack
     property var clickedFunc
 
     property alias textField: textField
@@ -217,6 +221,10 @@ Item {
         focusPolicy: Qt.NoFocus
         text: root.buttonText
         leftImageSource: root.buttonImageSource
+        defaultColor: root.buttonDefaultColor
+        hoveredColor: root.buttonHoveredColor
+        pressedColor: root.buttonPressedColor
+        textColor: root.buttonTextColor
 
         anchors.top: content.top
         anchors.bottom: content.bottom

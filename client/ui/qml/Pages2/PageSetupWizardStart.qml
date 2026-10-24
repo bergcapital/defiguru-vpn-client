@@ -72,6 +72,10 @@ PageType {
             id: connectionKey
             headerText: qsTr("Your connection")
             buttonText: qsTr("Paste")
+            buttonDefaultColor: "#763AC0"
+            buttonHoveredColor: "#8950D2"
+            buttonPressedColor: "#602D9F"
+            buttonTextColor: "#FFFFFF"
             textField.placeholderText: "vpn://"
             Layout.fillWidth: true
             Layout.topMargin: 24
@@ -96,7 +100,8 @@ PageType {
             Layout.alignment: Qt.AlignBottom
 
             text: qsTr("Add my VPN")
-            enabled: connectionKey.textField.text.trim() !== ""
+            visible: connectionKey.textField.text.trim() !== ""
+            enabled: visible
 
             clickedFunc: function() {
                 root.previewConnection()
