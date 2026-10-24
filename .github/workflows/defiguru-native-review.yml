@@ -49,7 +49,9 @@ jobs:
           image = Image.open('DeFiGuruVPN-welcome.png').convert('RGB')
           assert image.width >= 320 and image.height >= 480, 'Unexpected welcome dimensions'
           assert max(ImageStat.Stat(image).stddev) > 15, 'Blank or uniform welcome capture'
-          print(f'Actual QML welcome: {image.width}x{image.height}')
+          footer = image.crop((int(image.width * .2), int(image.height * .80), int(image.width * .8), int(image.height * .92)))
+          assert sum(min(pixel) > 100 for pixel in footer.getdata()) >= 60, 'Powered by footer is absent, clipped or low contrast'
+          print(f'Actual QML welcome and visible footer: {image.width}x{image.height}')
           PYIMAGE
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -132,7 +134,9 @@ jobs:
           image = Image.open('DeFiGuruVPN-welcome.png').convert('RGB')
           assert image.width >= 320 and image.height >= 480, 'Unexpected welcome dimensions'
           assert max(ImageStat.Stat(image).stddev) > 15, 'Blank or uniform welcome capture'
-          print(f'Actual QML welcome: {image.width}x{image.height}')
+          footer = image.crop((int(image.width * .2), int(image.height * .80), int(image.width * .8), int(image.height * .92)))
+          assert sum(min(pixel) > 100 for pixel in footer.getdata()) >= 60, 'Powered by footer is absent, clipped or low contrast'
+          print(f'Actual QML welcome and visible footer: {image.width}x{image.height}')
           PYIMAGE
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

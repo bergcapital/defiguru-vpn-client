@@ -136,6 +136,7 @@ PageType {
 
         CaptionTextType {
             text: "Powered by YLDX.AI"
+            color: "#AEB7CD"
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
             Layout.bottomMargin: 20 + PageController.safeAreaBottomMargin
