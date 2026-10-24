@@ -64,9 +64,12 @@ class LibSSHRecipe(ConanFile):
             raise ConanInvalidConfiguration(f"{self.ref} requires '-o mbedtls/*:enable_threading=True' when using '-o libssh/*:crypto_backend=mbedtls'")
 
     def source(self):
-        get(self, "https://www.libssh.org/files/0.11/libssh-0.11.3.tar.xz",
-            sha256="7d8a1361bb094ec3f511964e78a5a4dba689b5986e112afabe4f4d0d6c6125c3", strip_root=True
-        )
+        # Both URLs serve the same upstream release archive. Keep the exact
+        # upstream hash and TLS verification if its primary host is unavailable.
+        get(self, [
+            "https://www.libssh.org/files/0.11/libssh-0.11.3.tar.xz",
+            "https://archive.ubuntu.com/ubuntu/pool/main/libs/libssh/libssh_0.11.3.orig.tar.xz",
+        ], sha256="7d8a1361bb094ec3f511964e78a5a4dba689b5986e112afabe4f4d0d6c6125c3", strip_root=True)
 
     def generate(self):
         tc = CMakeToolchain(self)
